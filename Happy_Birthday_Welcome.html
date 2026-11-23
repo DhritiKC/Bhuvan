@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <title>Happy Birthday, Bhuvan!</title>
+    <script>
+      /* Birthday moment: 10 Dec 2026, 12:00 AM India time (IST, +05:30). Keep same as index.html */
+      var T = new Date("2026-12-10T00:00:00+05:30").getTime();
+      var Q = location.search;
+      var preview = Q.indexOf("preview") > -1;
+      var celebrate = Q.indexOf("c=1") > -1;
+      /* too early? send him back to the countdown (skip with ?preview) */
+      if (!preview && Date.now() < T) location.replace("index.html");
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Lora:wght@500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="gifts.css" />
+    <style>
+      /* ---- same background as the other pages ---- */
+      :root {
+        --ivory: #f6f1e7;
+        --ivory-dim: #e3cfc6;
+        --ink: #2b0a10;
+        --gold: #d8b45c;
+        --gold-soft: #f0d99a;
+      }
+      body {
+        background: linear-gradient(135deg, #3a0711, #6a1020, #4a0a16, #7a1626, #3a0711);
+        background-size: 400% 400%;
+        background-attachment: fixed;
+        animation: bg 22s ease-in-out infinite;
+      }
+      @keyframes bg {
+        0%, 100% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+      }
+      body::before,
+      body::after {
+        content: "";
+        position: fixed;
+        border-radius: 50%;
+        filter: blur(70px);
+        pointer-events: none;
+        z-index: -1;
+      }
+      body::before {
+        width: 380px;
+        height: 380px;
+        background: rgba(216, 180, 92, 0.2);
+        top: -110px;
+        left: -90px;
+        animation: orb1 14s ease-in-out infinite;
+      }
+      body::after {
+        width: 440px;
+        height: 440px;
+        background: rgba(200, 50, 70, 0.28);
+        bottom: -150px;
+        right: -110px;
+        animation: orb2 17s ease-in-out infinite;
+      }
+      @keyframes orb1 { 50% { transform: translate(90px, 70px); } }
+      @keyframes orb2 { 50% { transform: translate(-90px, -60px); } }
+      #spot {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: -1;
+        background: radial-gradient(420px circle at var(--mx, 70%) var(--my, 40%), rgba(255, 190, 120, 0.2), transparent 60%);
+      }
+      #sparks { display: none; }
+      #bgsp {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+      .grain {
+        position: fixed;
+        inset: 0;
+        pointer-events: none;
+        z-index: 3;
+        opacity: 0.07;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/></filter><rect width='140' height='140' filter='url(%23n)'/></svg>");
+      }
+    </style>
+    <style>
+      #fw {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: 5;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="spot" aria-hidden="true"></div>
+    <canvas id="sparks" aria-hidden="true"></canvas>
+    <canvas id="bgsp" aria-hidden="true"></canvas>
+    <div class="grain" aria-hidden="true"></div>
+    <div class="wrap">
+      <div class="eyebrow" id="ey">the moment has arrived</div>
+      <h1 id="h">Happy Birthday, Bhuvan!</h1>
+      <div class="msg" id="m">Your surprise is ready. ♥</div>
+      <div class="btns" id="b">
+        <a class="btn gold" href="Happy_Birthday_Page_0.html" data-nav
+          >Open it ♥</a
+        >
+      </div>
+    </div>
+    <canvas id="fw"></canvas>
+    <script src="gifts.js"></script>
+    <script src="music.js"></script>
+    <script>
+      /* the tap-for-music hint is only for the countdown page */
+      if (window.BDMusic) BDMusic.noHint();
+
+      var $ = function (i) {
+        return document.getElementById(i);
+      };
+      var cv = $("fw"),
+        cx = cv.getContext("2d"),
+        F = [];
+      function rs() {
+        cv.width = innerWidth;
+        cv.height = innerHeight;
+      }
+      rs();
+      addEventListener("resize", rs);
+      function burst() {
+        var x = cv.width * (0.15 + Math.random() * 0.7),
+          y = cv.height * (0.1 + Math.random() * 0.45),
+          h = Math.random() * 70 + 20;
+        for (var k = 0; k < 60; k++) {
+          var a = (k / 60) * 6.28,
+            s = 1.5 + Math.random() * 3.4;
+          F.push({
+            x: x,
+            y: y,
+            vx: Math.cos(a) * s,
+            vy: Math.sin(a) * s,
+            l: 1,
+            h: h,
+          });
+        }
+      }
+      (function d() {
+        cx.clearRect(0, 0, cv.width, cv.height);
+        F = F.filter(function (p) {
+          return p.l > 0;
+        });
+        F.forEach(function (p) {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.vy += 0.04;
+          p.vx *= 0.985;
+          p.l -= 0.013;
+          cx.fillStyle = "hsla(" + p.h + ",90%,70%," + p.l + ")";
+          cx.beginPath();
+          cx.arc(p.x, p.y, 2.3, 0, 6.28);
+          cx.fill();
+        });
+        requestAnimationFrame(d);
+      })();
+
+      $("m").classList.add("show");
+      setTimeout(
+        function () {
+          $("b").classList.add("show");
+        },
+        celebrate ? 2200 : 600,
+      );
+      if (celebrate) {
+        /* he was waiting at midnight -> full celebration */
+        var n = 0,
+          iv = setInterval(function () {
+            burst();
+            if (++n > 14) clearInterval(iv);
+          }, 350);
+        burst();
+        G.hearts($("h"), 30, "🎉");
+        if (navigator.vibrate) navigator.vibrate([80, 40, 120]);
+      } else {
+        burst();
+        setTimeout(burst, 500);
+      }
+    </script>
+    <script>
+      /* floating sparkles + moving spotlight (same as the other pages) */
+      (function () {
+        var cv = document.getElementById("bgsp"),
+          cx = cv.getContext("2d"),
+          W, H, P = [];
+        function size() { W = cv.width = innerWidth; H = cv.height = innerHeight; }
+        addEventListener("resize", size);
+        size();
+        function spark(y) {
+          return {
+            x: Math.random() * W,
+            y: y === undefined ? H + 20 : y,
+            r: 1.5 + Math.random() * 5,
+            v: 0.25 + Math.random() * 0.7,
+            sw: Math.random() * 6.28,
+            sp: 0.01 + Math.random() * 0.02,
+            a: 0.15 + Math.random() * 0.5,
+            t: Math.random() * 6.28,
+          };
+        }
+        for (var i = 0; i < 45; i++) P.push(spark(Math.random() * H));
+        (function draw() {
+          cx.clearRect(0, 0, W, H);
+          for (var i = 0; i < P.length; i++) {
+            var p = P[i];
+            p.y -= p.v;
+            p.sw += p.sp;
+            p.x += Math.sin(p.sw) * 0.4;
+            p.t += 0.03;
+            if (p.y < -20) { P[i] = spark(); continue; }
+            var al = p.a * (0.6 + 0.4 * Math.sin(p.t)),
+              g = cx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3);
+            g.addColorStop(0, "rgba(255,225,160," + al + ")");
+            g.addColorStop(1, "rgba(255,225,160,0)");
+            cx.fillStyle = g;
+            cx.beginPath();
+            cx.arc(p.x, p.y, p.r * 3, 0, 6.28);
+            cx.fill();
+          }
+          requestAnimationFrame(draw);
+        })();
+
+        var last = 0;
+        function move(x, y) {
+          document.documentElement.style.setProperty("--mx", x + "px");
+          document.documentElement.style.setProperty("--my", y + "px");
+        }
+        addEventListener("pointermove", function (e) { last = Date.now(); move(e.clientX, e.clientY); });
+        setInterval(function () {
+          if (Date.now() - last < 2500) return;
+          var t = Date.now() / 1600;
+          move(innerWidth * (0.6 + 0.25 * Math.sin(t)), innerHeight * (0.42 + 0.12 * Math.cos(t * 0.8)));
+        }, 40);
+      })();
+    </script>
+  </body>
+</html>
